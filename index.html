@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Highlight Dates</title>
+    <!-- Google Fonts untuk gaya tulisan tangan dan minimalis -->
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4efe9;
+            --card-bg: #ffffff;
+            --text-color: #2b2b2b;
+            --accent-color: #d88373;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            font-size: 0.95rem;
+            color: #666;
+        }
+
+        /* Container Album Grid */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            width: 100%;
+            max-width: 1000px;
+            padding: 20px;
+        }
+
+        /* Kartu Bingkai Polaroid */
+        .polaroid-card {
+            background-color: var(--card-bg);
+            padding: 16px 16px 24px 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            border-radius: 4px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .polaroid-card:hover {
+            transform: translateY(-8px) rotate(0deg) !important;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Efek Miring Variatif untuk Kesan Estetik */
+        .polaroid-card:nth-child(odd) {
+            transform: rotate(-2deg);
+        }
+
+        .polaroid-card:nth-child(even) {
+            transform: rotate(2deg);
+        }
+
+        /* Efek Tumpukan Foto (Stacked Photos effect) */
+        .polaroid-card::before,
+        .polaroid-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            z-index: -1;
+            transition: transform 0.3s ease;
+        }
+
+        .polaroid-card::before {
+            transform: rotate(-3deg) scale(0.98);
+            background-color: #faf7f2;
+        }
+
+        .polaroid-card::after {
+            transform: rotate(4deg) scale(0.96);
+            background-color: #f0ebe1;
+        }
+
+        /* Area Foto */
+        .photo-frame {
+            width: 100%;
+            height: 280px;
+            overflow: hidden;
+            background-color: #eee;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .polaroid-card:hover .photo-frame img {
+            transform: scale(1.05);
+        }
+
+        /* Keterangan dan Teks */
+        .caption-container {
+            text-align: center;
+        }
+
+        .date-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #888;
+            margin-bottom: 4px;
+        }
+
+        .photo-title {
+            font-family: 'Caveat', cursive;
+            font-size: 1.8rem;
+            color: #333;
+            line-height: 1.2;
+            margin-bottom: 8px;
+        }
+
+        .photo-description {
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.4;
+        }
+
+        /* Modal Tampilan Foto Penuh (Hanya Gambar) */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 90vw;
+            max-height: 90vh;
+            text-align: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content img {
+            width: auto;
+            height: auto;
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+            display: block;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: -45px;
+            right: 0;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Responsif untuk layar HP */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+            .gallery-container {
+                gap: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>GLIMPSE OF US</h1>
+        <p>Tribe, 23 Oktober 2026 </p>
+    </header>
+
+    <!-- Container Utama Foto -->
+    <div class="gallery-container">
+
+        <!-- Kartu 1 -->
+        <div class="polaroid-card" onclick="openModal('foto 4.jpeg')">
+            <div class="photo-frame">
+                <img src="foto 4.jpeg">
+            </div>
+            <div class="caption-container">
+                <p class="photo-description">kita habisin waktu untuk nunggu jam kamu progress di tribe dengan km yang mengerjakan ur work</p>
+            </div>
+        </div>
+
+        <!-- Kartu 2 -->
+        <div class="polaroid-card" onclick="openModal('foto 6.jpeg')">
+            <div class="photo-frame">
+                <img src="foto 6.jpeg">
+            </div>
+            <div class="caption-container">
+                <p class="photo-description">ini bukan bunga pertama ku dari kamu but im always happy kalo kamu kasi aku bunga makasi sayang</p>
+            </div>
+        </div>
+
+        <!-- Kartu 3 -->
+        <div class="polaroid-card" onclick="openModal('foto 5.jpeg')">
+            <div class="photo-frame">
+                <img src="foto 5.jpeg">
+            </div>
+            <div class="caption-container">
+                <p class="photo-description">makasi sayang i love u, makasi udah selalu ngeusahain aku dan kasi aku yang terbaik. maaf kalo aku sering ngeselin, ngambek dan banyak lainnya. semoga kamu gapernah cape dan bosen sama aku. ILYSM sayang</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Modal Tampilan Foto Penuh (Hanya Gambar) -->
+    <div id="photoModal" class="modal" onclick="closeModal(event)">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModalDirect()">&times;</button>
+            <img id="modalImg" src="" alt="Preview Foto">
+        </div>
+    </div>
+
+    <script>
+        // Fungsi untuk membuka Modal Tampilan Penuh (Hanya Gambar)
+        function openModal(imgSrc) {
+            document.getElementById('modalImg').src = imgSrc;
+            document.getElementById('photoModal').style.display = 'flex';
+        }
+
+        // Fungsi untuk menutup Modal saat klik di area latar belakang gelap
+        function closeModal(event) {
+            if (event.target.classList.contains('modal')) {
+                document.getElementById('photoModal').style.display = 'none';
+            }
+        }
+
+        // Fungsi penutup langsung dari tombol 'X'
+        function closeModalDirect() {
+            document.getElementById('photoModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
